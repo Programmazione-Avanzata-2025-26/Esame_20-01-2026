@@ -1,5 +1,4 @@
 import flet as ft
-from UI.alert import AlertManager
 
 class View:
     def __init__(self, page: ft.Page):
@@ -10,9 +9,6 @@ class View:
         self._page.theme_mode = ft.ThemeMode.LIGHT
         self._controller = None
 
-        # Alert
-        self.alert = AlertManager(page)
-
         self.txtNumAlbumMin = None
         self.ddArtist = None
         self.btnArtistsConnected = None
@@ -22,8 +18,10 @@ class View:
         self.txt_result = None
 
     def load_interface(self):
+
         self._title = ft.Text("Gestione Artisti e Generi", color="blue", size=24)
         self._page.controls.append(self._title)
+
 
         #row1
         self.txtNumAlbumMin = ft.TextField( label="Numero album minimo", width=250)
@@ -33,7 +31,8 @@ class View:
         self._page.controls.append(row1)
 
         #row2
-        self.ddArtist = ft.Dropdown(label="Artista", width = 250, disabled=True)
+
+        self.ddArtist = ft.Dropdown(label="Artista", width = 250, disabled=True, on_change=self._controller.read_dropdown )
         self.btnArtistsConnected = ft.ElevatedButton(text="Artisti collegati", width = 150, disabled=True, on_click=self._controller.handle_connected_artists )
         row2 = ft.Row([self.ddArtist, self.btnArtistsConnected],
                       alignment=ft.MainAxisAlignment.CENTER)
@@ -42,7 +41,7 @@ class View:
         #row3
         self.txtMaxArtists = ft.TextField( label="Numero massimo artisti", width=300, disabled=True)
         self.txtMinDuration = ft.TextField( label="Durata minima (minuti)", width=250, disabled=True)
-        self.btnSearchArtists = ft.ElevatedButton(text="Cerca cammino da artista", disabled=True)
+        self.btnSearchArtists = ft.ElevatedButton(text="Cerca cammino da artista", disabled=True, on_click=self._controller.handle_search_artists_path)
         row3 = ft.Row([self.txtMinDuration, self.txtMaxArtists, self.btnSearchArtists],
                       alignment=ft.MainAxisAlignment.CENTER)
         self._page.controls.append(row3)
@@ -59,9 +58,6 @@ class View:
     @controller.setter
     def controller(self, controller):
         self._controller = controller
-
-    def show_alert(self, messaggio):
-        self.alert.show_alert(messaggio)
 
     def set_controller(self, controller):
         self._controller = controller
